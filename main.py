@@ -8,8 +8,6 @@ from rembg import new_session, remove
 
 app = FastAPI()
 
-# isnet-general-use takes only ~140MB RAM (fits safely in Render 512MB free tier)
-# and specializes in fine-edge matting for delicate structures like jewelry
 session = new_session(model_name="isnet-general-use")
 
 @app.get("/")
@@ -32,7 +30,6 @@ async def process_white_bg(image_url: str):
 
         input_img = Image.open(io.BytesIO(resp.content)).convert("RGB")
 
-        # Fine jewelry protection thresholds
         cutout = remove(
             input_img,
             session=session,
