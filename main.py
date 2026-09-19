@@ -8,7 +8,9 @@ from rembg import new_session, remove
 
 app = FastAPI()
 
-session = new_session(model_name="birefnet-general")
+# isnet-general-use takes only ~140MB RAM (fits safely in Render 512MB free tier)
+# and specializes in fine-edge matting for delicate structures like jewelry
+session = new_session(model_name="isnet-general-use")
 
 @app.get("/")
 def health_check():
@@ -30,11 +32,12 @@ async def process_white_bg(image_url: str):
 
         input_img = Image.open(io.BytesIO(resp.content)).convert("RGB")
 
+        # Fine jewelry protection thresholds
         cutout = remove(
             input_img,
             session=session,
             alpha_matting=True,
-            alpha_matting_foreground_threshold=220,
+            alpha_matting_foreground_threshold=230,
             alpha_matting_background_threshold=15,
             alpha_matting_erode_size=1,
             post_process_mask=True,
