@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+httpx
+pillow
+numpy
+rembg
+onnxruntime
